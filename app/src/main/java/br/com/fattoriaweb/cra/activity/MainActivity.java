@@ -1,17 +1,22 @@
-package br.com.fattoriaweb.cra;
+package br.com.fattoriaweb.cra.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import br.com.fattoriaweb.cra.R;
+import br.com.fattoriaweb.cra.fragment.ClientesFragment;
+import br.com.fattoriaweb.cra.fragment.PrincipalFragment;
+import br.com.fattoriaweb.cra.fragment.ServicosFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -23,12 +28,19 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //carrega tela principal
+        PrincipalFragment principalFragment = new PrincipalFragment();
+        FragmentTransaction fragment = getSupportFragmentManager().beginTransaction();
+        fragment.replace(R.id.frameContainer, principalFragment);
+        fragment.commit();
+
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+               enviarEmail();
             }
         });
 
@@ -52,12 +64,15 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -73,6 +88,7 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+    */
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -81,14 +97,34 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_principal) {
-            // Handle the camera action
+
+            PrincipalFragment principalFragment = new PrincipalFragment();
+            FragmentTransaction fragment = getSupportFragmentManager().beginTransaction();
+            fragment.replace(R.id.frameContainer, principalFragment);
+            fragment.commit();
+
+
         } else if (id == R.id.nav_servicos) {
+
+            ServicosFragment servicosFragment = new ServicosFragment();
+            FragmentTransaction fragment = getSupportFragmentManager().beginTransaction();
+            fragment.replace(R.id.frameContainer, servicosFragment);
+            fragment.commit();
 
         } else if (id == R.id.nav_clientes) {
 
+            ClientesFragment clientesFragment = new ClientesFragment();
+            FragmentTransaction fragment = getSupportFragmentManager().beginTransaction();
+            fragment.replace(R.id.frameContainer, clientesFragment);
+            fragment.commit();
+
         } else if (id == R.id.nav_contato) {
 
+            enviarEmail();
+
         } else if (id == R.id.nav_sobre) {
+
+            startActivity(new Intent(this, SobreActivity.class));
 
         }
 
@@ -96,4 +132,23 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    public void enviarEmail(){
+
+        Intent email = new Intent(Intent.ACTION_SEND);
+        email.putExtra(Intent.EXTRA_EMAIL, new String[]{"andre.arinelli@fattoriaweb.com.br"});
+        email.putExtra(Intent.EXTRA_SUBJECT,"Contato pelo App");
+        email.putExtra(Intent.EXTRA_TEXT,"Mensagem Automatica");
+
+        //configurar app para email
+        email.setType("message/rfc822");
+        startActivity(Intent.createChooser(email,"Escolha o app de email"));
+
+
+
+
+    }
+
+
 }
